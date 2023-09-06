@@ -16,9 +16,9 @@ public class Lesson2Exercise3_Receipt {
 
             input.nextLine();
 
-                Answer = N1 + N2 + N3;
-                System.out.println("SUBTOTAL..£");
-                System.out.println(Answer);
+            Answer = N1 + N2 + N3;
+            System.out.println("SUBTOTAL..£");
+            System.out.println(Answer);
 
         }
     }
