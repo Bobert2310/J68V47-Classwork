@@ -2,13 +2,13 @@ import java.util.Scanner;
 public class Lesson2Exercise2_Calculator {
 
         public static void main(String[] args) {
-            int Answer;
+            double Answer;
             Scanner input = new Scanner(System.in);
             System.out.print("First Number ");
-            int N1 = input.nextInt();
+            double N1 = input.nextDouble();
 
             System.out.print("Second Number ");
-            int N2 = input.nextInt();
+            double N2 = input.nextDouble();
 
             input.nextLine();
 
