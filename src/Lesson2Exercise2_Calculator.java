@@ -1,6 +1,5 @@
 import java.util.Scanner;
 public class Lesson2Exercise2_Calculator {
-
         public static void main(String[] args) {
             double Answer;
             Scanner input = new Scanner(System.in);
@@ -31,6 +30,5 @@ public class Lesson2Exercise2_Calculator {
                 Answer = N1 / N2;
                 System.out.println(Answer);
             }
-
         }
 }
