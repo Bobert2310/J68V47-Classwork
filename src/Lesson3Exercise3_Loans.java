@@ -17,7 +17,6 @@ public class Lesson3Exercise3_Loans {
         M = L * (((j/100)/12) / (1 - Math.pow(1 + ((j/100)/12), -(n*12))));
 
 
-        System.out.print("Monthly payment for this loan = " + M);
-
+        System.out.format("\nItem 1..£%.2f", M);
     }
 }
