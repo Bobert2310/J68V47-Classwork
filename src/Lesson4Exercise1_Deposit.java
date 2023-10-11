@@ -15,7 +15,7 @@ public class Lesson4Exercise1_Deposit {
         System.out.println("Enter the amount you wish to pay as deposit:");
         double PAY = input.nextDouble();
 
-        System.out.println("Customer: " + name.substring(0,1).toUpperCase() + (" ") + surname.substring(0,1).toUpperCase() + surname.substring(1,surname.length()).toLowerCase());
+        System.out.println("Customer: " + name.substring(0,1).toUpperCase() + (" ") + surname.substring(0,1).toUpperCase() + surname.substring(1).toLowerCase());
 
         Remainder = OrderV - PAY;
         System.out.format("\nOrder Total..£%.2f", OrderV);
