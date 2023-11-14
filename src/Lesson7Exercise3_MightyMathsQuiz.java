@@ -3,72 +3,55 @@ import java.util.Scanner;
 
 public class Lesson7Exercise3_MightyMathsQuiz {
 
-    public static int Score = 0;
-    public static int Lives = 3;
-    public static Random random = new Random();
-    public static int RN1 = random.nextInt(11);
-    public static int RN2 = random.nextInt(11);
-    public static int Answer = RN1 + RN2;
-    public static void askQuestion(){
-        Scanner input = new Scanner(System.in);
-        for (int count = 0; count <= 10; count++) {
-            int RN1 = random.nextInt(11);
-            int RN2 = random.nextInt(11);
-            int Answer = RN1 + RN2;
+    private static int askQuestion(int number1, int number2, Scanner input) {
+        System.out.print("What is " + number1 + " + " + number2 + "? ");
+        return input.nextInt();
+    }
 
-            System.out.println(RN1 + (" + ") + RN2 + " = ");
-            int UserInput = input.nextInt();
-            System.out.println();
+    private static int correctAnswer(int score) {
+        System.out.println("Correct!");
+        return score + 1;
     }
-    public static void CorrectAnswer(){
-            if (UserInput == Answer) {
-                Score++;
-                System.out.println("Correct!\n");
+
+    private static int wrongAnswer(int answer, int lives) {
+        System.out.println("Wrong! The answer is " + answer);
+        lives--;
+        System.out.println("You have " + lives + " lives left.");
+        return lives;
     }
-    public static void WrongAnswer(){
-                System.out.println("Sorry, the answer was " + Answer + ".\nYou lost a life :(");
-                Lives--;
-                System.out.println("You have " + Lives + " lives left\n");
+
+    private static void gameOver(int score, int lives) {
+        System.out.println("Game over. Your score is " + score);
+        if (lives > 0) {
+            System.out.println("Well done!");
+        }
     }
-    public static void gameOver(){
-                if (Lives == 0) {
-                    System.out.println("Game Over! You ran out of lives.");
-    }
+
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
         Random random = new Random();
-        int Score = 0;
-        int Lives = 3;
+        int score = 0;
+        int lives = 3;
+        int userAnswer;
+        int answer;
+        int count = 1;
 
-        for (int count = 0; count <= 10; count++) {
-            int RN1 = random.nextInt(11);
-            int RN2 = random.nextInt(11);
-            int Answer = RN1 + RN2;
+        while (count <= 10 && lives > 0) {
+            int number1 = random.nextInt(11);
+            int number2 = random.nextInt(11);
 
-            System.out.println(RN1 + (" + ") + RN2 + " = ");
-            int UserInput = input.nextInt();
-            System.out.println();
+            userAnswer = askQuestion(number1, number2, input);
+            answer = number1 + number2;
 
-            if (UserInput == Answer) {
-                Score++;
-                System.out.println("Correct!\n");
+            if (answer == userAnswer) {
+                score = correctAnswer(score);
             } else {
-                System.out.println("Sorry, the answer was " + Answer + ".\nYou lost a life :(");
-                Lives--;
-                System.out.println("You have " + Lives + " lives left\n");
-
-
-                if (Score == 10) {
-                    System.out.println("Well Done! Perfect Score!");
-                } else if (Lives == 0) {
-                    System.out.println("Game Over! You ran out of lives.");
-                } else {
-                    System.out.println("Thank you for playing");
-                }
-                System.out.println("Your final score is " + Score + " Out of 10");
+                lives = wrongAnswer(answer, lives);
             }
 
+            count++;
         }
+
+        gameOver(score, lives);
     }
 }
-
