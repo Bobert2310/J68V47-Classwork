@@ -1,11 +1,24 @@
 import java.util.Scanner;
 public class Lesson9Exercise3_ErrorHandlingQuiz {
-        public static int askQuestion(int number1, int number2){
-            Scanner scanner = new Scanner(System.in);
-            System.out.format("What is %d + %d? ",number1, number2);
-            int userAnswer = scanner.nextInt();
-            return userAnswer;
+    public static int askQuestion(int number1, int number2) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.format("What is %d + %d? ", number1, number2);
+        int userAnswer = 0;
+
+        while (true) {
+            if (scanner.hasNextInt()) {
+                userAnswer = scanner.nextInt();
+                break;
+            } else {
+                scanner.nextLine(); // Consume the invalid input
+                System.out.println("Invalid input. Please enter a number.");
+                System.out.format("What is %d + %d? ", number1, number2);
+            }
         }
+        return userAnswer;
+    }
+
+
 
         public static int correctAnswer(int score){
             System.out.println("CORRECT!");
@@ -32,6 +45,7 @@ public class Lesson9Exercise3_ErrorHandlingQuiz {
             int userAnswer = 0;
             int answer = 0;
             int count = 1;
+
             while (count <= 10 && lives > 0){
                 userAnswer = askQuestion(count, count*count);
                 answer = count + (count*count);
