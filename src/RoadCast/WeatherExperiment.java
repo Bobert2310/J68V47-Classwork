@@ -3,46 +3,61 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import org.json.JSONObject;
 
 public class WeatherExperiment {
 
+    private static final String API_KEY = "YOUR_OPENWEATHER_API_KEY";
+    private static final String API_URL = "http://api.openweathermap.org/data/2.5/weather";
+
     public static void main(String[] args) {
+        String city = "YOUR_CITY_NAME";
+        String urlString = String.format("%s?q=%s&appid=%s", API_URL, city, API_KEY);
+
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+            // Create URL object
+            URL url = new URL(urlString);
 
-            // Get user input for the city
-            System.out.print("Enter the city name: ");
-            String city = reader.readLine();
-
-            // Replace "API_KEY" and "https://api.example.com/weather" with actual API key and endpoint
-            String apiKey = "API_KEY";
-            String apiUrl = "https://api.example.com/weather?city=" + city + "&apiKey=" + apiKey;
-
-            // Make a request to the weather API
-            URL url = new URL(apiUrl);
+            // Create HTTP connection
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+            // Set request method
             connection.setRequestMethod("GET");
 
-            // Check if the request was successful (HTTP status code 200)
-            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                BufferedReader apiReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                String line;
-                StringBuilder response = new StringBuilder();
+            // Get response code
+            int responseCode = connection.getResponseCode();
 
-                // Read the API response
-                while ((line = apiReader.readLine()) != null) {
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                // Read response
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                StringBuilder response = new StringBuilder();
+                String line;
+
+                while ((line = reader.readLine()) != null) {
                     response.append(line);
                 }
-                apiReader.close();
 
-                // Display the weather information
-                System.out.println("Weather for " + city + ":");
-                System.out.println(response.toString());
+                reader.close();
+
+                // Parse JSON response
+                JSONObject jsonResponse = new JSONObject(response.toString());
+
+                // Extract relevant weather information
+                JSONObject main = jsonResponse.getJSONObject("main");
+                double temperature = main.getDouble("temp");
+                double humidity = main.getDouble("humidity");
+
+                // Display weather information
+                System.out.println("Weather in " + city);
+                System.out.println("Temperature: " + temperature + " Kelvin");
+                System.out.println("Humidity: " + humidity + "%");
             } else {
-                System.out.println("Failed to get weather information. HTTP error code: " + connection.getResponseCode());
+                System.out.println("Failed to retrieve weather information. Response code: " + responseCode);
             }
 
+            // Close connection
             connection.disconnect();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
