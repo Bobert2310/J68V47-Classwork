@@ -7,9 +7,9 @@ import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
-public class WeatherExperiment2 {
+public class WeatherExperimentJSON {
 
-    private static final String OPENWEATHER_API_KEY = "056ae952c57ac348fd17eee9538b9732";
+    private static final String OPENWEATHER_API_KEY = "b9478773177fc290b1f32f1432103c10";
     private static final String OPENWEATHER_API_ENDPOINT = "https://api.openweathermap.org/data/2.5/weather";
     private static final String OPENWEATHER_GEOCODE_ENDPOINT = "https://api.openweathermap.org/geo/1.0/direct";
 

@@ -1,8 +1,10 @@
 package RoadCast;
 
 import java.util.Scanner;
-public class RoadCast {
-    private static String location = "Default Location"; // Default location value
+
+public class RoadCastLayout {
+    private static String[] locations = {"Aberdeen", "Glasgow", "Edinburgh", "London", "Paris"};
+    private static String selectedLocation = "Default Location"; // Default location value
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -13,21 +15,23 @@ public class RoadCast {
         boolean exitProgram = false;
 
         while (!exitProgram) {
-            displayLocation();
-            setLocation(scanner.nextLine());
+            displayLocationOptions();
+            int locationChoice = getUserChoice(scanner, locations.length);
 
-            if (!isValidLocation()) {
-                System.out.println("Error: Invalid symbols or numbers. Please use only characters.");
+            if (locationChoice == 0) {
+                exitProgram = true;
                 continue;
             }
 
+            selectedLocation = locations[locationChoice - 1];
+
             if (!checkLocationWithWeatherAPI()) {
-                System.out.println("Could not find location. Please try again or enter another location.");
+                System.out.println("Could not find location. Please try again or choose another location.");
                 continue;
             }
 
             displayMainMenu();
-            int choice = getUserChoice(scanner);
+            int choice = getUserChoice(scanner, 4);
 
             switch (choice) {
                 case 1:
@@ -35,7 +39,7 @@ public class RoadCast {
                     break;
 
                 case 2:
-                    changeLocation(scanner);
+
                     break;
 
                 case 3:
@@ -61,44 +65,34 @@ public class RoadCast {
         System.out.println("Press any key to continue");
     }
 
-    private static void displayLocation() {
-        System.out.println("\nPlease enter your location:");
-    }
+    private static void displayLocationOptions() {
+        System.out.println("\nPlease choose your location:");
 
-    private static void setLocation(String newLocation) {
-        location = newLocation;
-    }
+        for (int i = 0; i < locations.length; i++) {
+            System.out.println((i + 1) + ". " + locations[i]);
+        }
 
-    private static boolean isValidLocation() {
-        // Implement validation logic for valid characters in the location
-        // For simplicity, assuming all characters are valid
-        return true;
+        System.out.println("0. Exit");
     }
 
     private static boolean checkLocationWithWeatherAPI() {
-        // Implement logic to check if location is available with weather API
-        // For simplicity, assuming the location is always valid
+
+
         return true;
     }
 
-    private static void displayMainMenu() {
-        System.out.println("\nMain Menu");
-        System.out.println("Please type the option you'd like or the corresponding number");
-        System.out.println("1. Road Conditions\n 2. Change Location\n 3. Print/Save Report\n 4. Exit");
-    }
-
     private static void roadConditionsMenu(Scanner scanner) {
-        System.out.println("\nHere are the current road conditions for " + location + ":");
+        System.out.println("\nHere are the current road conditions for " + selectedLocation + ":");
         // Implement fetching weather information and displaying road conditions
         System.out.println("1. Print\n 2. Back\n 3. Exit");
-        int roadConditionChoice = getUserChoice(scanner);
+        int roadConditionChoice = getUserChoice(scanner, 3);
 
         switch (roadConditionChoice) {
             case 1:
                 printSaveReport();
                 break;
             case 2:
-                // Back to the main menu
+
                 break;
             case 3:
                 System.out.println("Exiting the program. Goodbye!");
@@ -108,23 +102,26 @@ public class RoadCast {
         }
     }
 
-    private static void changeLocation(Scanner scanner) {
-        System.out.println("\nChanging Location");
-        setLocation(scanner.nextLine());
-    }
-
     private static void printSaveReport() {
         System.out.println("\nSaving Current Report to File");
         // Implement logic to run road conditions segment and write output to file
         System.out.println("Your Report has been saved as _______");
     }
 
-    private static int getUserChoice(Scanner scanner) {
-        while (!scanner.hasNextInt()) {
-            System.out.println("Invalid input. Please enter a number.");
-            scanner.next(); // Consume the invalid input
+    private static int getUserChoice(Scanner scanner, int maxChoice) {
+        int choice = -1;
+
+        while (choice < 0 || choice > maxChoice) {
+            System.out.println("Please enter a number between 0 and " + maxChoice + ":");
+            while (!scanner.hasNextInt()) {
+                System.out.println("Invalid input. Please enter a number.");
+                scanner.next();
+            }
+            choice = scanner.nextInt();
+            scanner.nextLine();
         }
-        return scanner.nextInt();
+
+        return choice;
     }
 
     private static void waitForAnyKey() {
@@ -133,5 +130,13 @@ public class RoadCast {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private static void displayMainMenu() {
+        System.out.println("\nMain Menu:");
+        System.out.println("1. Road Conditions");
+        System.out.println("2. Change Location");
+        System.out.println("3. Save Report");
+        System.out.println("4. Exit");
     }
 }
