@@ -1,4 +1,4 @@
-package RoadCast;
+package RoadCastFinal;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -9,18 +9,18 @@ import java.util.Scanner;
 
 public class RoadCastAlpha {
 
-    private static final String API_KEY = "b9478773177fc290b1f32f1432103c10";
-    private static final String API_URL = "http://api.openweathermap.org/data/2.5/weather";
+    private static final String API_KEY = "b9478773177fc290b1f32f1432103c10"; //my Api key from OPENWEATHER
+    private static final String API_URL = "http://api.openweathermap.org/data/2.5/weather"; //OPENWEATHER url
 
-    private static String[] locations = {"Aberdeen", "Glasgow", "Edinburgh", "London", "Paris"};
-    private static String selectedLocation = "No Location Selected";
+    private static String[] locations = {"Aberdeen", "Glasgow", "Edinburgh", "London", "Paris"}; //Array for locations
+    private static String selectedLocation = "No Location Selected"; //Default location (comes up in case of no selection)
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
         Welcome();
         pressAnyKey();
-
+        changeLocationMenu(scanner);
         boolean Quit = false;
 
         while (!Quit) {
@@ -56,14 +56,14 @@ public class RoadCastAlpha {
         System.out.println("2. Weather Report");
         System.out.println("3. Save Report");
         System.out.println("4. Exit");
-    }
+    } //display options for the main menu
 
     private static void changeLocationMenu(Scanner scanner) {
         System.out.println("\nLocation Menu:");
 
-        for (int i = 0; i < locations.length; i++) {
-            System.out.println((i + 1) + ". " + locations[i]);
-        }
+        for (int count = 0; count < locations.length; count++) {
+            System.out.println((count + 1) + ". " + locations[count]);
+        } //display my location options with a count and array
 
         int locationChoice = UserInput(scanner, 5);
 
