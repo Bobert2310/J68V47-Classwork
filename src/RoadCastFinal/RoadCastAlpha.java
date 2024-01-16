@@ -6,13 +6,14 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class RoadCastAlpha {
 
     private static final String API_KEY = "b9478773177fc290b1f32f1432103c10"; //my Api key from OPENWEATHER
     private static final String API_URL = "http://api.openweathermap.org/data/2.5/weather"; //OPENWEATHER url
 
-    private static String[] locations = {"Aberdeen", "Glasgow", "Edinburgh", "London", "Paris"}; //Array for locations
     private static String selectedLocation = "No Location Selected"; //Default location (comes up in case of no selection)
 
     public static void main(String[] args) {
@@ -59,17 +60,15 @@ public class RoadCastAlpha {
     } //display options for the main menu
 
     private static void changeLocationMenu(Scanner scanner) {
-        System.out.println("\nLocation Menu:");
+        System.out.println("\nPlease Enter Your Current Location:");
 
-        for (int count = 0; count < locations.length; count++) {
-            System.out.println((count + 1) + ". " + locations[count]);
-        } //display my location options with a count and array
+        String userInputLocation = scanner.nextLine().trim();
 
-        int locationChoice = UserInput(scanner, 5);
-
-        if (locationChoice != 0) {
-            selectedLocation = locations[locationChoice - 1];
+        if (!userInputLocation.isEmpty()) {
+            selectedLocation = userInputLocation;
             System.out.println("Location changed to: " + selectedLocation);
+        } else {
+            System.out.println("Invalid input. Location remains unchanged.");
         }
     }
 
@@ -77,7 +76,6 @@ public class RoadCastAlpha {
         boolean backToMainMenu = false;
 
         while (!backToMainMenu) {
-            System.out.println("\nHere is the current weather for " + selectedLocation + ":");
             displayReport();
             System.out.println("1. Back\n2. Exit");
             int roadConditionChoice = UserInput(scanner, 2);
@@ -111,7 +109,39 @@ public class RoadCastAlpha {
 
     private static void displayReport() {
         String weatherData = getWeatherData();
-        System.out.println("Raw Weather Data for " + selectedLocation + ":\n" + weatherData);
+        try {
+            // Parse the JSON response using Jackson
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(weatherData);
+
+            // Extract and display relevant weather information
+            String description = jsonNode.get("weather").get(0).get("description").asText();
+            double temperature = jsonNode.get("main").get("temp").asDouble();
+            int humidity = jsonNode.get("main").get("humidity").asInt();
+
+            System.out.println("Weather Conditions for " + selectedLocation + ":");
+            System.out.println("Description: " + description);
+            System.out.println("Temperature: " + temperature + "°C");
+            System.out.println("Humidity: " + humidity + "%");
+
+            System.out.println("\nTravel Recommendations:");
+            if (description.contains("rain")) {
+                System.out.println("It's raining. Drive Carefully.");
+            } else if (description.contains("snow")) {
+                System.out.println("Snow is expected / present please advise and drive safely.");
+            } else if (description.contains("few clouds")) {
+                System.out.println("cloudy weather but dry, roads should be normal");
+            } else if (temperature > 30) {
+                System.out.println("It's hot! I hope your air conditioning works.");
+            } else if (temperature < 0) {
+                System.out.println("It's cold. your windscreen may need defrosted");
+            } else {
+                System.out.println("Weather conditions are moderate. Enjoy your travel!");
+            }
+
+        } catch (Exception e) {
+            System.out.println("Failed to parse weather information. Error: " + e.getMessage());
+        }
     }
 
     private static String getWeatherData() {
