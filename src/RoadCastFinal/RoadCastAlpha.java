@@ -145,14 +145,53 @@ public class RoadCastAlpha {
     public static void saveReportToFile() {
         String weatherData = getWeatherData();
 
-        String filePath = "src/RoadCastFinal/RoadCastReport.txt";
+        if (!weatherData.isEmpty()) {
+            String filePath = "src/RoadCastFinal/RoadCastReport.txt";
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
-            writer.write(weatherData);
-            writer.newLine();
-            System.out.println("Weather report saved to " + filePath);
-        } catch (Exception e) {
-            System.out.println("Failed to save weather report. Error: " + e.getMessage());
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
+                ObjectMapper objectMapper = new ObjectMapper();
+                JsonNode jsonNode = objectMapper.readTree(weatherData);
+
+                String description = jsonNode.get("weather").get(0).get("description").asText();
+                double temperature = jsonNode.get("main").get("temp").asDouble();
+                int humidity = jsonNode.get("main").get("humidity").asInt();
+                double tempCelsius = temperature - 273.15;
+
+                writer.write("Weather Conditions for " + selectedLocation + ":");
+                writer.newLine();
+                writer.write("Description: " + description);
+                writer.newLine();
+                writer.write(String.format("Temperature: %.0f°C", tempCelsius));
+                writer.newLine();
+                writer.write("Humidity: " + humidity + "%");
+                writer.newLine();
+
+                writer.write("\nTravel Recommendations:");
+                writer.newLine();
+
+                if (description.contains("rain")) {
+                    writer.write("It's raining. Drive Carefully.");
+                } else if (description.contains("snow")) {
+                    writer.write("Snow is expected / present please advise and drive safely.");
+                } else if (description.contains("few clouds")) {
+                    writer.write("Cloudy weather but dry, roads should be normal.");
+                } else if (temperature > 30) {
+                    writer.write("It's hot! I hope your air conditioning works.");
+                } else if (temperature < 0) {
+                    writer.write("It's cold. Your windscreen may need defrosted.");
+                } else {
+                    writer.write("Weather conditions are moderate. Enjoy your travel!");
+                }
+
+                writer.newLine();
+                writer.newLine();
+
+                System.out.println("Weather report saved to " + filePath);
+            } catch (Exception e) {
+                System.out.println("Failed to save weather report. Error: " + e.getMessage());
+            }
+        } else {
+            System.out.println("Weather data is empty. Unable to save report.");
         }
     }
 
