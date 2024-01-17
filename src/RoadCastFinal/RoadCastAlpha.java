@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class RoadCastAlpha {
 
     private static final String API_KEY = "b9478773177fc290b1f32f1432103c10"; //my Api key from OPENWEATHER
-    private static final String API_URL = "http://api.openweathermap.org/data/2.5/weather"; //OPENWEATHER url
+    private static final String API_URL = "https://api.openweathermap.org/data/2.5/weather"; //OPENWEATHER url
 
     private static String selectedLocation = "No Location Selected"; //Default location (comes up in case of no selection)
 
@@ -29,9 +29,9 @@ public class RoadCastAlpha {
             int mainMenuChoice = UserInput(scanner, 4);
 
             if (mainMenuChoice == 1) {
-                changeLocationMenu(scanner);
-            } else if (mainMenuChoice == 2) {
                 roadConditionsMenu(scanner);
+            } else if (mainMenuChoice == 2) {
+                changeLocationMenu(scanner);
             } else if (mainMenuChoice == 3) {
                 saveReportToFile();
             } else if (mainMenuChoice == 4) {
@@ -50,15 +50,33 @@ public class RoadCastAlpha {
         System.out.println("Welcome to RoadCast");
         System.out.println("Press the Enter key to continue");
     }
+    private static void pressAnyKey() {
+        try {
+            System.in.read();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    private static int UserInput(Scanner scanner, int maxChoice) {
+        int choice;
 
-    private static void MainMenu() {
-        System.out.println("\nMain Menu:");
-        System.out.println("1. Set Location");
-        System.out.println("2. Weather Report");
-        System.out.println("3. Save Report");
-        System.out.println("4. Exit");
-    } //display options for the main menu
+        while (true) {
+            System.out.println("Please enter a number between 1 and " + maxChoice + ":");
+            try {
+                choice = Integer.parseInt(scanner.nextLine());
 
+                if (choice >= 1 && choice <= maxChoice) {
+                    break;
+                } else {
+                    System.out.println("Invalid input. Please enter a number between 1 and " + maxChoice + ".");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
+            }
+        }
+
+        return choice;
+    }
     private static void changeLocationMenu(Scanner scanner) {
         System.out.println("\nPlease Enter Your Current Location:");
 
@@ -71,18 +89,28 @@ public class RoadCastAlpha {
             System.out.println("Invalid input. Location remains unchanged.");
         }
     }
+    private static void MainMenu() {
+        System.out.println("\nMain Menu:");
+        System.out.println("1. RoadCast Report");
+        System.out.println("2. Reset Location");
+        System.out.println("3. Save Report");
+        System.out.println("4. Exit");
+    }
+
 
     private static void roadConditionsMenu(Scanner scanner) {
         boolean backToMainMenu = false;
 
         while (!backToMainMenu) {
             displayReport();
-            System.out.println("1. Back\n2. Exit");
+            System.out.println("1. Print Report\n2. Back\n3. Exit");
             int roadConditionChoice = UserInput(scanner, 2);
 
             if (roadConditionChoice == 1) {
-                backToMainMenu = true;
+                saveReportToFile();
             } else if (roadConditionChoice == 2) {
+                backToMainMenu = true;
+            } else if (roadConditionChoice == 3) {
                 System.out.println("Exiting the program. Goodbye!");
                 System.exit(0);
             } else {
@@ -110,11 +138,11 @@ public class RoadCastAlpha {
     private static void displayReport() {
         String weatherData = getWeatherData();
         try {
-            // Parse the JSON response using Jackson
+            // Parse JSON using Jackson
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(weatherData);
 
-            // Extract and display relevant weather information
+
             String description = jsonNode.get("weather").get(0).get("description").asText();
             double temperature = jsonNode.get("main").get("temp").asDouble();
             int humidity = jsonNode.get("main").get("humidity").asInt();
@@ -176,32 +204,5 @@ public class RoadCastAlpha {
         }
     }
 
-    private static int UserInput(Scanner scanner, int maxChoice) {
-        int choice = -1;
 
-        while (true) {
-            System.out.println("Please enter a number between 1 and " + maxChoice + ":");
-            try {
-                choice = Integer.parseInt(scanner.nextLine());
-
-                if (choice >= 1 && choice <= maxChoice) {
-                    break;
-                } else {
-                    System.out.println("Invalid input. Please enter a number between 1 and " + maxChoice + ".");
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a valid number.");
-            }
-        }
-
-        return choice;
-    }
-
-    private static void pressAnyKey() {
-        try {
-            System.in.read();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }
