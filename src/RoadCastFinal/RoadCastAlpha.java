@@ -11,8 +11,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class RoadCastAlpha {
 
-    public static final String API_KEY = "b9478773177fc290b1f32f1432103c10"; //my Api key from OPENWEATHER
-    public static final String API_URL = "https://api.openweathermap.org/data/2.5/weather"; //OPENWEATHER url
+    public static final String API_KEY = "b9478773177fc290b1f32f1432103c10";
+    public static final String API_URL = "https://api.openweathermap.org/data/2.5/weather";
 
     public static String selectedLocation = "No Location Selected";
 
