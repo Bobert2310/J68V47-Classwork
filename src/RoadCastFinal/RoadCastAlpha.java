@@ -11,10 +11,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class RoadCastAlpha {
 
-    private static final String API_KEY = "b9478773177fc290b1f32f1432103c10"; //my Api key from OPENWEATHER
-    private static final String API_URL = "https://api.openweathermap.org/data/2.5/weather"; //OPENWEATHER url
+    public static final String API_KEY = "b9478773177fc290b1f32f1432103c10"; //my Api key from OPENWEATHER
+    public static final String API_URL = "https://api.openweathermap.org/data/2.5/weather"; //OPENWEATHER url
 
-    private static String selectedLocation = "No Location Selected";
+    public static String selectedLocation = "No Location Selected";
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -46,18 +46,18 @@ public class RoadCastAlpha {
         scanner.close();
     }
 
-    private static void Welcome() {
+    public static void Welcome() {
         System.out.println("Welcome to RoadCast");
         System.out.println("Press the Enter key to continue");
     }
-    private static void pressEnter() {
+    public static void pressEnter() {
         try {
             System.in.read();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    private static int UserInput(Scanner scanner, int maxChoice) {
+    public static int UserInput(Scanner scanner, int maxChoice) {
         int choice;
 
         while (true) {
@@ -77,19 +77,41 @@ public class RoadCastAlpha {
 
         return choice;
     }
-    private static void changeLocationMenu(Scanner scanner) {
-        System.out.println("\nPlease Enter Your Current Location:");
+    public static void changeLocationMenu(Scanner scanner) {
+        boolean validLocation = false;
 
-        String userInputLocation = scanner.nextLine().trim();
+        while (!validLocation) {
+            System.out.println("\nPlease Enter Your Current City:");
+            String userInputLocation = scanner.nextLine().trim();
 
-        if (!userInputLocation.isEmpty()) {
-            selectedLocation = userInputLocation;
-            System.out.println("Location changed to: " + selectedLocation);
-        } else {
-            System.out.println("Invalid input. Location remains unchanged.");
+            if (!userInputLocation.isEmpty() && isValidCity(userInputLocation)) {
+                selectedLocation = userInputLocation;
+                System.out.println("Location changed to: " + selectedLocation);
+                validLocation = true;
+            } else {
+                System.out.println("Invalid city name. Please enter a valid city.");
+            }
         }
     }
-    private static void MainMenu() {
+
+    public static boolean isValidCity(String cityName) {
+        String urlString = String.format("%s?q=%s&appid=%s", API_URL, cityName, API_KEY);
+
+        try {
+            URL url = new URL(urlString);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+
+            int responseCode = connection.getResponseCode();
+
+            return responseCode == HttpURLConnection.HTTP_OK;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+
+    public static void MainMenu() {
         System.out.println("\nMain Menu:");
         System.out.println("1. RoadCast Report");
         System.out.println("2. Reset Location");
@@ -98,7 +120,7 @@ public class RoadCastAlpha {
     }
 
 
-    private static void roadConditionsMenu(Scanner scanner) {
+    public static void roadConditionsMenu(Scanner scanner) {
         boolean backToMainMenu = false;
 
         while (!backToMainMenu) {
@@ -120,7 +142,7 @@ public class RoadCastAlpha {
 
     }
 
-    private static void saveReportToFile() {
+    public static void saveReportToFile() {
         String weatherData = getWeatherData();
 
         String filePath = "src/RoadCastFinal/RoadCastReport.txt";
@@ -135,7 +157,7 @@ public class RoadCastAlpha {
     }
 
 
-    private static void displayReport() {
+    public static void displayReport() {
         String weatherData = getWeatherData();
         try {
 
@@ -173,7 +195,7 @@ public class RoadCastAlpha {
         }
     }
 
-    private static String getWeatherData() {
+    public static String getWeatherData() {
         String urlString = String.format("%s?q=%s&appid=%s", API_URL, selectedLocation, API_KEY);
 
         try {
@@ -204,6 +226,4 @@ public class RoadCastAlpha {
             return "";
         }
     }
-
-
 }
