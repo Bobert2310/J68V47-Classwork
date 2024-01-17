@@ -14,13 +14,13 @@ public class RoadCastAlpha {
     private static final String API_KEY = "b9478773177fc290b1f32f1432103c10"; //my Api key from OPENWEATHER
     private static final String API_URL = "https://api.openweathermap.org/data/2.5/weather"; //OPENWEATHER url
 
-    private static String selectedLocation = "No Location Selected"; //Default location (comes up in case of no selection)
+    private static String selectedLocation = "No Location Selected";
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
         Welcome();
-        pressAnyKey();
+        pressEnter();
         changeLocationMenu(scanner);
         boolean Quit = false;
 
@@ -50,7 +50,7 @@ public class RoadCastAlpha {
         System.out.println("Welcome to RoadCast");
         System.out.println("Press the Enter key to continue");
     }
-    private static void pressAnyKey() {
+    private static void pressEnter() {
         try {
             System.in.read();
         } catch (Exception e) {
@@ -103,8 +103,8 @@ public class RoadCastAlpha {
 
         while (!backToMainMenu) {
             displayReport();
-            System.out.println("1. Print Report\n2. Back\n3. Exit");
-            int roadConditionChoice = UserInput(scanner, 2);
+            System.out.println("\n1. Print Report\n2. Back\n3. Exit");
+            int roadConditionChoice = UserInput(scanner, 3);
 
             if (roadConditionChoice == 1) {
                 saveReportToFile();
@@ -123,7 +123,7 @@ public class RoadCastAlpha {
     private static void saveReportToFile() {
         String weatherData = getWeatherData();
 
-        String filePath = "src/RoadCast/RoadCastReport.txt";
+        String filePath = "src/RoadCastFinal/RoadCastReport.txt";
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
             writer.write(weatherData);
@@ -138,7 +138,7 @@ public class RoadCastAlpha {
     private static void displayReport() {
         String weatherData = getWeatherData();
         try {
-            // Parse JSON using Jackson
+
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(weatherData);
 
@@ -146,11 +146,12 @@ public class RoadCastAlpha {
             String description = jsonNode.get("weather").get(0).get("description").asText();
             double temperature = jsonNode.get("main").get("temp").asDouble();
             int humidity = jsonNode.get("main").get("humidity").asInt();
-
+            double temp1 = (temperature - 273.15);
             System.out.println("Weather Conditions for " + selectedLocation + ":");
             System.out.println("Description: " + description);
-            System.out.println("Temperature: " + temperature + "°C");
-            System.out.println("Humidity: " + humidity + "%");
+            System.out.format("Temperature: %.0f" , temp1);
+            System.out.print("°C");
+            System.out.println("\nHumidity: " + humidity + "%");
 
             System.out.println("\nTravel Recommendations:");
             if (description.contains("rain")) {
